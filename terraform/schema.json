@@ -1,0 +1,12 @@
+[
+  { "name": "sale_id", "type": "STRING", "mode": "NULLABLE" },
+  { "name": "sale_date", "type": "DATE", "mode": "NULLABLE" },
+  { "name": "customer_id", "type": "STRING", "mode": "NULLABLE" },
+  { "name": "product_id", "type": "STRING", "mode": "NULLABLE" },
+  { "name": "product_name", "type": "STRING", "mode": "NULLABLE" },
+  { "name": "category", "type": "STRING", "mode": "NULLABLE" },
+  { "name": "quantity", "type": "INTEGER", "mode": "NULLABLE" },
+  { "name": "unit_price", "type": "FLOAT", "mode": "NULLABLE" },
+  { "name": "total_price", "type": "FLOAT", "mode": "NULLABLE" },
+  { "name": "region", "type": "STRING", "mode": "NULLABLE" }
+]

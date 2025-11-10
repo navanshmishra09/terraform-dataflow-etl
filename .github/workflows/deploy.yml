@@ -1,0 +1,47 @@
+name: Deploy Infrastructure and Run Dataflow Job
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Apply Terraform and Trigger Dataflow Job
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform -chdir=terraform init -input=false
+
+      - name: Terraform Apply
+        run: terraform -chdir=terraform apply -auto-approve
+
+      - name: Run Dataflow Job
+        run: |
+          gcloud dataflow jobs run etl-pipeline-$(date +%Y%m%d%H%M%S) \
+            --gcs-location gs://dataflow-templates/latest/python-batch \
+            --region=${{ secrets.GCP_REGION }} \
+            --parameters \
+              inputFile=gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/custom_sales_dataset.csv,\
+              outputTable=${{ secrets.GCP_PROJECT_ID }}:cleaned_sales_data.sales_cleaned,\
+              tempLocation=gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/temp,\
+              pythonFile=gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/etl_pipeline.py
