@@ -22,7 +22,7 @@ resource "google_storage_bucket" "cleaned_bucket" {
 resource "google_storage_bucket_object" "raw_data" {
   name   = "custom_sales_dataset.csv"
   bucket = google_storage_bucket.raw_bucket.name
-  source = "D:/Revel Labs/DevOps/terraform-dataflow-etl ci cd/terraform-dataflow-etl/data/custom_sales_dataset.csv" # local path to your CSV
+  source = "D:\Revel Labs\DevOps\terraform-dataflow-etl\terraform-dataflow-etl\data\custom_sales_dataset.csv" # local path to your CSV
 }
 
 # -----------------------------
