@@ -22,7 +22,7 @@ resource "google_storage_bucket" "cleaned_bucket" {
 resource "google_storage_bucket_object" "raw_data" {
   name   = "custom_sales_dataset.csv"
   bucket = google_storage_bucket.raw_bucket.name
-  source = "${path.module}/../data/custom_sales_dataset.csv"
+  source = "${path.module}/../data/custom_sales_dataset.csv" # local path to your CSV
 }
 
 # -----------------------------
