@@ -1,0 +1,18 @@
+{
+  "name": "ETL Flex Template",
+  "description": "ETL pipeline to clean sales data and load into BigQuery",
+  "parameters": [
+    {
+      "name": "inputFile",
+      "label": "Input File",
+      "helpText": "Path to the input CSV file in GCS",
+      "paramType": "TEXT"
+    },
+    {
+      "name": "outputTable",
+      "label": "Output BigQuery Table",
+      "helpText": "Destination BigQuery table",
+      "paramType": "TEXT"
+    }
+  ]
+}
