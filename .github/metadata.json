@@ -1,0 +1,18 @@
+{
+  "name": "ETL Dataflow Pipeline",
+  "description": "A Dataflow Flex Template for the ETL pipeline to clean sales data.",
+  "parameters": [
+    {
+      "name": "inputFile",
+      "label": "Input File",
+      "helpText": "The GCS path to the input CSV file.",
+      "paramType": "TEXT"
+    },
+    {
+      "name": "outputTable",
+      "label": "Output BigQuery Table",
+      "helpText": "The BigQuery table where cleaned data will be written.",
+      "paramType": "TEXT"
+    }
+  ]
+}
