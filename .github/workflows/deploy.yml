@@ -40,11 +40,11 @@ jobs:
         
       - name: Build Dataflow Flex Template
         run: |
-          gcloud dataflow flex-template build gs://***-raw-buckettt/templates/etl_pipeline_flex.json \
-            --image gcr.io/${{ env.GCP_PROJECT }}/etl_pipeline_flex_image:latest \
+          gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \
             --sdk-language "PYTHON" \
-            --metadata-file .github/metadata.json \
             --flex-template-base-image "gcr.io/dataflow-templates-base/python3-template-launcher-base" \
+            --image-gcr-path "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image:latest" \
+            --metadata-file .github/metadata.json \
             --py-path ./dataflow
       
       - name: Run Dataflow Flex Template
