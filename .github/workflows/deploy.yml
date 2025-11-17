@@ -45,7 +45,7 @@ jobs:
         run: |
           gcloud dataflow flex-template build gs://***-raw-buckettt/templates/etl_pipeline_flex.json \
             --sdk-language=PYTHON \
-            --image-gcr-path "gcr.io/***/etl_pipeline_flex_image" \
+            --image-gcr-path "gcr.io/devops-training-475116/etl_pipeline_flex_image" \
             --metadata-file ./dataflow/metadata.json \
             --flex-template-base-image "gcr.io/dataflow-templates-base/python3-template-launcher-base" \
             --py-path ./dataflow \
