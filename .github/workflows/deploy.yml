@@ -33,25 +33,31 @@ jobs:
         run: terraform -chdir=terraform init -input=false
       
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan -var="project_id=devops-training-475116" -out=tfplan
+        run: terraform -chdir=terraform plan -var="project_id=${{ secrets.GCP_PROJECT_ID }}" -out=tfplan
         
       - name: Terraform Apply
-        run: terraform -chdir=terraform apply -auto-approve -var="project_id=devops-training-475116"
-        
+        run: terraform -chdir=terraform apply -auto-approve -var="project_id=${{ secrets.GCP_PROJECT_ID }}"
+
+      # --------------------------
+      # Build Flex Template
+      # --------------------------
       - name: Build Dataflow Flex Template
         run: |
-           gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \
+          gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \
             --image "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image:latest" \
-            --metadata-file .github/metadata.json \
+            --image-gcr-path "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image" \
+            --metadata-file ./dataflow/metadata.json \
             --flex-template-base-image "gcr.io/dataflow-templates-base/python3-template-launcher-base" \
             --py-path ./dataflow \
             --env FLEX_TEMPLATE_PYTHON_PY_FILE=etl_pipeline.py
 
-      
+      # --------------------------
+      # Run Flex Template
+      # --------------------------
       - name: Run Dataflow Flex Template
         run: |
           gcloud dataflow flex-template run etl-pipeline-$(date +%Y%m%d%H%M%S) \
             --template-file-gcs-location gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \
             --region=${{ secrets.GCP_REGION }} \
-            --parameters inputFile=gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/custom_sales_dataset.csv,outputTable=${{ secrets.GCP_PROJECT_ID }}:cleaned_sales_data.sales_cleaned
-              
+            --parameters input=gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/custom_sales_dataset.csv \
+            --parameters output=${{ secrets.GCP_PROJECT_ID }}:cleaned_sales_data.sales_cleaned
