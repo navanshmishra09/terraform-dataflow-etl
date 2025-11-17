@@ -43,7 +43,7 @@ jobs:
       # --------------------------
       - name: Build Dataflow Flex Template
         run: |
-          gcloud dataflow flex-template build gs://devops-training-475116-raw-buckettt/templates/etl_pipeline_flex.json
+          gcloud dataflow flex-template build gs://devops-training-475116-raw-buckettt/templates/etl_pipeline_flex.json \
             --sdk-language=PYTHON \
             --image-gcr-path "gcr.io/devops-training-475116/etl_pipeline_flex_image" \
             --metadata-file ./dataflow/metadata.json \
