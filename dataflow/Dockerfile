@@ -10,4 +10,3 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Set the main Python file for the launcher
 ENV FLEX_TEMPLATE_PYTHON_PY_FILE="etl_pipeline.py"
-
