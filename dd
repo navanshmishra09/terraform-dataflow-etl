@@ -1,0 +1,150 @@
+[33mcommit a1efd45b41b81eb076721e311cc92a4913b7138b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Navansh Mishra <navanshmishra2@gmail.com>
+Date:   Mon Nov 17 16:20:55 2025 +0530
+
+    fix: correct flex-template build command
+
+[1mdiff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml[m
+[1mindex 491d1d5..9305a6a 100644[m
+[1m--- a/.github/workflows/deploy.yml[m
+[1m+++ b/.github/workflows/deploy.yml[m
+[36m@@ -44,13 +44,12 @@[m [mjobs:[m
+       - name: Build Dataflow Flex Template[m
+         run: |[m
+           gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \[m
+[31m-            --image "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image:latest" \[m
+             --image-gcr-path "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image" \[m
+             --metadata-file ./dataflow/metadata.json \[m
+             --flex-template-base-image "gcr.io/dataflow-templates-base/python3-template-launcher-base" \[m
+             --py-path ./dataflow \[m
+             --env FLEX_TEMPLATE_PYTHON_PY_FILE=etl_pipeline.py[m
+[31m-[m
+[32m+[m[41m            [m
+       # --------------------------[m
+       # Run Flex Template[m
+       # --------------------------[m
+
+[33mcommit 3738b9893334f2bf3c4210e4005da343e75a60aa[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Navansh Mishra <navanshmishra2@gmail.com>
+Date:   Mon Nov 17 16:05:52 2025 +0530
+
+    feat: add Dockerfile, requirements.txt, and init for Dataflow Flex Template
+
+[1mdiff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml[m
+[1mindex 5a1e696..491d1d5 100644[m
+[1m--- a/.github/workflows/deploy.yml[m
+[1m+++ b/.github/workflows/deploy.yml[m
+[36m@@ -33,25 +33,31 @@[m [mjobs:[m
+         run: terraform -chdir=terraform init -input=false[m
+       [m
+       - name: Terraform Plan[m
+[31m-        run: terraform -chdir=terraform plan -var="project_id=devops-training-475116" -out=tfplan[m
+[32m+[m[32m        run: terraform -chdir=terraform plan -var="project_id=${{ secrets.GCP_PROJECT_ID }}" -out=tfplan[m
+         [m
+       - name: Terraform Apply[m
+[31m-        run: terraform -chdir=terraform apply -auto-approve -var="project_id=devops-training-475116"[m
+[31m-        [m
+[32m+[m[32m        run: terraform -chdir=terraform apply -auto-approve -var="project_id=${{ secrets.GCP_PROJECT_ID }}"[m
+[32m+[m
+[32m+[m[32m      # --------------------------[m
+[32m+[m[32m      # Build Flex Template[m
+[32m+[m[32m      # --------------------------[m
+       - name: Build Dataflow Flex Template[m
+         run: |[m
+[31m-           gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \[m
+[32m+[m[32m          gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \[m
+             --image "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image:latest" \[m
+[31m-            --metadata-file .github/metadata.json \[m
+[32m+[m[32m            --image-gcr-path "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image" \[m
+[32m+[m[32m            --metadata-file ./dataflow/metadata.json \[m
+             --flex-template-base-image "gcr.io/dataflow-templates-base/python3-template-launcher-base" \[m
+             --py-path ./dataflow \[m
+             --env FLEX_TEMPLATE_PYTHON_PY_FILE=etl_pipeline.py[m
+ [m
+[31m-      [m
+[32m+[m[32m      # --------------------------[m
+[32m+[m[32m      # Run Flex Template[m
+[32m+[m[32m      # --------------------------[m
+       - name: Run Dataflow Flex Template[m
+         run: |[m
+           gcloud dataflow flex-template run etl-pipeline-$(date +%Y%m%d%H%M%S) \[m
+             --template-file-gcs-location gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \[m
+             --region=${{ secrets.GCP_REGION }} \[m
+[31m-            --parameters inputFile=gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/custom_sales_dataset.csv,outputTable=${{ secrets.GCP_PROJECT_ID }}:cleaned_sales_data.sales_cleaned[m
+[31m-              [m
+[32m+[m[32m            --parameters input=gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/custom_sales_dataset.csv \[m
+[32m+[m[32m            --parameters output=${{ secrets.GCP_PROJECT_ID }}:cleaned_sales_data.sales_cleaned[m
+
+[33mcommit 23aa7240be48c8b97c702fd2c7f5429eb3780e8b[m
+Author: Navansh Mishra <navanshmishra2@gmail.com>
+Date:   Mon Nov 17 15:55:29 2025 +0530
+
+    feat: add Dockerfile, requirements.txt, and init for Dataflow Flex Template
+
+[1mdiff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml[m
+[1mindex 40ecd3b..5a1e696 100644[m
+[1m--- a/.github/workflows/deploy.yml[m
+[1m+++ b/.github/workflows/deploy.yml[m
+[36m@@ -41,12 +41,12 @@[m [mjobs:[m
+       - name: Build Dataflow Flex Template[m
+         run: |[m
+            gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \[m
+[31m-            --sdk-language "PYTHON" \[m
+[31m-            --flex-template-base-image "gcr.io/dataflow-templates-base/python3-template-launcher-base" \[m
+[31m-            --image-gcr-path "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image:latest" \[m
+[32m+[m[32m            --image "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image:latest" \[m
+             --metadata-file .github/metadata.json \[m
+[32m+[m[32m            --flex-template-base-image "gcr.io/dataflow-templates-base/python3-template-launcher-base" \[m
+             --py-path ./dataflow \[m
+             --env FLEX_TEMPLATE_PYTHON_PY_FILE=etl_pipeline.py[m
+[32m+[m
+       [m
+       - name: Run Dataflow Flex Template[m
+         run: |[m
+
+[33mcommit d5a97e99126baab25508439d7b097d0295f6f279[m
+Author: Navansh Mishra <navanshmishra2@gmail.com>
+Date:   Wed Nov 12 02:13:44 2025 +0530
+
+    fix: add env variable for Dataflow flex template build
+
+[1mdiff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml[m
+[1mindex 44247bb..40ecd3b 100644[m
+[1m--- a/.github/workflows/deploy.yml[m
+[1m+++ b/.github/workflows/deploy.yml[m
+[36m@@ -40,12 +40,13 @@[m [mjobs:[m
+         [m
+       - name: Build Dataflow Flex Template[m
+         run: |[m
+[31m-          gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \[m
+[32m+[m[32m           gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \[m
+             --sdk-language "PYTHON" \[m
+             --flex-template-base-image "gcr.io/dataflow-templates-base/python3-template-launcher-base" \[m
+             --image-gcr-path "gcr.io/${{ secrets.GCP_PROJECT_ID }}/etl_pipeline_flex_image:latest" \[m
+             --metadata-file .github/metadata.json \[m
+[31m-            --py-path ./dataflow[m
+[32m+[m[32m            --py-path ./dataflow \[m
+[32m+[m[32m            --env FLEX_TEMPLATE_PYTHON_PY_FILE=etl_pipeline.py[m
+       [m
+       - name: Run Dataflow Flex Template[m
+         run: |[m
+
+[33mcommit 06e76b908fdd6e6660e42b892c842afe7cb36893[m
+Author: Navansh Mishra <navanshmishra2@gmail.com>
+Date:   Wed Nov 12 02:09:23 2025 +0530
+
+    fix: add image-gcr-path for Dataflow Flex Template build
+
+[1mdiff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml[m
+[1mindex 06a37ab..44247bb 100644[m
+[1m--- a/.github/workflows/deploy.yml[m
+[1m+++ b/.github/workflows/deploy.yml[m
+[36m@@ -40,11 +40,11 @@[m [mjobs:[m
+         [m
+       - name: Build Dataflow Flex Template[m
+         run: |[m
+[31m-          gcloud dataflow flex-template build gs://***-raw-buckettt/templates/etl_pipeline_flex.json \[m
+[31m-            --image gcr.io/${{ env.GCP_PROJECT }}/etl_pipeline_flex_image:latest \[m
+[32m+[m[32m          gcloud dataflow flex-template build gs://${{ secrets.GCP_PROJECT_ID }}-raw-buckettt/templates/etl_pipeline_flex.json \[m
+             --sdk-language "PYTHON" \[m
+[31m-    
