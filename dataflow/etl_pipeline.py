@@ -5,6 +5,7 @@ import csv
 import argparse
 import logging
 import os
+import pandas as pd
 
 
 class CleanTransform(beam.DoFn):
