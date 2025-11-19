@@ -62,7 +62,12 @@ jobs:
           gcloud dataflow flex-template run etl-pipeline-$(date +%Y%m%d%H%M%S) \
             --template-file-gcs-location gs://devops-training-475116-raw-buckettt/templates/etl_pipeline_flex.json \
             --region=us-west4 \
-            --parameters inputFile=gs://devops-training-475116-raw-buckettt/custom_sales_dataset.csv \
-            --parameters outputTable=devops-training-475116:cleaned_sales_data.sales_cleaned
+            --parameters input=gs://devops-training-475116-raw-buckettt/custom_sales_dataset.csv \
+            --parameters temp_location=gs://devops-training-475116-raw-buckettt/temp \
+            --parameters staging_location=gs://devops-training-475116-raw-buckettt/staging \
+            --parameters project=devops-training-475116 \
+            --parameters region=us-west4 \
+            --parameters dataset=cleaned_sales_data \
+            --parameters table=sales_cleaned
             
            

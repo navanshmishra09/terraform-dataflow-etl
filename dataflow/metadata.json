@@ -3,15 +3,45 @@
   "description": "ETL pipeline to clean sales data and load into BigQuery",
   "parameters": [
     {
-      "name": "inputFile",
-      "label": "Input File",
-      "helpText": "Path to the input CSV file in GCS",
+      "name": "input",
+      "label": "Input CSV file",
+      "helpText": "GCS path of the input CSV file",
       "paramType": "TEXT"
     },
     {
-      "name": "outputTable",
-      "label": "Output BigQuery Table",
-      "helpText": "Destination BigQuery table",
+      "name": "temp_location",
+      "label": "Temp Location",
+      "helpText": "GCS temporary directory for Dataflow",
+      "paramType": "TEXT"
+    },
+    {
+      "name": "staging_location",
+      "label": "Staging Location",
+      "helpText": "GCS staging directory for Dataflow",
+      "paramType": "TEXT"
+    },
+    {
+      "name": "project",
+      "label": "GCP Project ID",
+      "helpText": "Your GCP project ID",
+      "paramType": "TEXT"
+    },
+    {
+      "name": "region",
+      "label": "Region",
+      "helpText": "Dataflow region",
+      "paramType": "TEXT"
+    },
+    {
+      "name": "dataset",
+      "label": "BigQuery Dataset",
+      "helpText": "Destination dataset in BigQuery",
+      "paramType": "TEXT"
+    },
+    {
+      "name": "table",
+      "label": "BigQuery Table",
+      "helpText": "Destination table in BigQuery",
       "paramType": "TEXT"
     }
   ]
